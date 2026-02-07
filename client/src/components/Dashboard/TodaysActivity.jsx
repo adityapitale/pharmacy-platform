@@ -14,7 +14,7 @@ export default function TodaysActivity() {
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
             <h3 className="text-lg font-bold text-gray-800 mb-4">Today's Activity</h3>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {activities.map((item, idx) => (
                     <div key={idx} className="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 border border-gray-100 text-center hover:shadow-sm transition-shadow">
                         <div className={`p-3 rounded-full ${item.bg} mb-3`}>

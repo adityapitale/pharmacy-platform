@@ -31,8 +31,8 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden mx-auto">
                 <div className="bg-indigo-600 p-8 text-center text-white">
                     <div className="flex justify-center mb-4">
                         <div className="bg-white/20 p-3 rounded-full backdrop-blur-sm">

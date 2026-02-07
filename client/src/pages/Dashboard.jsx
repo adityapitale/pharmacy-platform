@@ -43,22 +43,36 @@ export default function Dashboard() {
             {/* Top Navigation */}
             <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-indigo-600 rounded-lg">
-                                <Menu size={20} className="text-white" />
+                    <div className="flex flex-col md:flex-row justify-between items-center h-auto md:h-16 py-2 md:py-0 gap-2 md:gap-0">
+                        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-600 rounded-lg">
+                                    <Menu size={20} className="text-white" />
+                                </div>
+                                <span className="text-xl font-bold text-gray-900 tracking-tight">Pharma<span className="text-indigo-600">Care</span></span>
                             </div>
-                            <span className="text-xl font-bold text-gray-900 tracking-tight">Pharma<span className="text-indigo-600">Care</span></span>
+
+                            {/* Mobile User Icon (Visible only on small screens) */}
+                            <div className="flex md:hidden items-center gap-3">
+                                <div className="h-8 w-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-bold">
+                                    {user?.name?.charAt(0) || 'P'}
+                                </div>
+                                <button onClick={handleLogout} className="p-2 text-gray-500">
+                                    <LogOut size={20} />
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
-                            <button className="p-2 text-gray-400 hover:text-gray-600 relative">
-                                <Bell size={20} />
-                                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                            </button>
+                        <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 p-2 md:p-0">
+                            <div className="flex items-center gap-4">
+                                <button className="p-2 text-gray-400 hover:text-gray-600 relative">
+                                    <Bell size={20} />
+                                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                                </button>
+                            </div>
 
-                            <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-                                <div className="text-right hidden sm:block">
+                            <div className="hidden md:flex items-center gap-3 pl-4 border-l border-gray-200">
+                                <div className="text-right">
                                     <p className="text-sm font-semibold text-gray-900">{user?.name || 'Pharmacist'}</p>
                                     <p className="text-xs text-gray-500">License: {user?.role || 'PHARMACIST'}</p>
                                 </div>
@@ -87,9 +101,9 @@ export default function Dashboard() {
 
                 {/* Quick Actions */}
                 <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Dashboard</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <button className="flex items-center justify-center gap-2 p-4 bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:translate-y-[-2px] hover:shadow-xl transition-all font-semibold">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4 px-2 md:px-0">Dashboard</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <button className="flex items-center justify-center gap-2 p-4 bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:translate-y-[-2px] hover:shadow-xl transition-all font-semibold active:scale-95">
                             <Plus size={20} /> Add Inventory
                         </button>
                         <button
@@ -100,10 +114,10 @@ export default function Dashboard() {
                             <FileText size={20} className={isProcessing ? "text-gray-400" : "text-blue-500"} />
                             {isProcessing ? 'Processing...' : 'Process Prescription'}
                         </button>
-                        <button className="flex items-center justify-center gap-2 p-4 bg-white text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-indigo-300 transition-all font-medium shadow-sm">
+                        <button className="flex items-center justify-center gap-2 p-4 bg-white text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-indigo-300 transition-all font-medium shadow-sm active:scale-95">
                             <RefreshCw size={20} className="text-green-500" /> Update Stock
                         </button>
-                        <button className="flex items-center justify-center gap-2 p-4 bg-white text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-indigo-300 transition-all font-medium shadow-sm">
+                        <button className="flex items-center justify-center gap-2 p-4 bg-white text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-indigo-300 transition-all font-medium shadow-sm active:scale-95">
                             <Upload size={20} className="text-orange-500" /> Upload Document
                         </button>
                     </div>

@@ -14,28 +14,30 @@ export default function InventoryManagement() {
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <h3 className="text-lg font-bold text-gray-800">Inventory Management</h3>
-                <div className="flex gap-2">
-                    <div className="relative">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <div className="relative w-full sm:w-auto">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                         <input
                             type="text"
                             placeholder="Search medicines..."
-                            className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-full sm:w-64"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">
-                        <Filter size={18} />
-                    </button>
-                    <button className="flex items-center gap-2 bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
-                        <Plus size={16} /> Add
-                    </button>
+                    <div className="flex gap-2">
+                        <button className="flex-1 sm:flex-none p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 flex justify-center">
+                            <Filter size={18} />
+                        </button>
+                        <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
+                            <Plus size={16} /> Add
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
+                <table className="w-full text-sm text-left min-w-[600px]">
                     <thead className="bg-gray-50 text-gray-600 font-medium">
                         <tr>
                             <th className="px-4 py-3 rounded-l-lg">Medicine Name</th>
