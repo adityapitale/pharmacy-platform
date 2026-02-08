@@ -15,48 +15,52 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
     }, []);
 
-    const login = (email, password) => {
-        // Mock login logic
-        const registeredUsers = JSON.parse(localStorage.getItem('pharma_registered_users') || '[]');
-        const foundUser = registeredUsers.find(u => u.email === email && u.password === password);
+    const login = async (email, password) => {
+    try {
+        const res = await fetch("http://localhost:5000/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
 
-        if (foundUser) {
-            setUser(foundUser);
-            localStorage.setItem('pharma_user', JSON.stringify(foundUser));
-            return { success: true };
+        const data = await res.json();
+
+        if (data.success) {
+            setUser(data.user);
+            localStorage.setItem("pharma_user", JSON.stringify(data.user));
         }
 
-        // Fallback specific mock user if no registration exists yet (for easiness)
-        if (email === 'demo@pharmacy.com' && password === 'demo123') {
-            const demoUser = { name: 'Demo Pharmacist', email, role: 'PHARMACIST' };
-            setUser(demoUser);
-            localStorage.setItem('pharma_user', JSON.stringify(demoUser));
-            // Auto-register this demo user so persistence works next time
-            localStorage.setItem('pharma_registered_users', JSON.stringify([...registeredUsers, { ...demoUser, password }]));
-            return { success: true };
-        }
-
-        return { success: false, message: 'Invalid email or password' };
+        return data;
+    } catch (err) {
+        return { success: false, message: "Server error" };
+    }
     };
 
-    const register = (userData) => {
-        const registeredUsers = JSON.parse(localStorage.getItem('pharma_registered_users') || '[]');
 
-        if (registeredUsers.find(u => u.email === userData.email)) {
-            return { success: false, message: 'User already exists' };
+    const register = async (userData) => {
+    try {
+        const res = await fetch("http://localhost:5000/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            const loggedUser = { ...userData, role: "PHARMACIST" };
+            setUser(loggedUser);
+            localStorage.setItem("pharma_user", JSON.stringify(loggedUser));
         }
 
-        const newUser = { ...userData, role: 'PHARMACIST', joined: new Date().toISOString() };
-        const updatedUsers = [...registeredUsers, newUser];
+        console.log("REGISTER RESPONSE:", data);
 
-        localStorage.setItem('pharma_registered_users', JSON.stringify(updatedUsers));
-
-        // Auto login after register
-        setUser(newUser);
-        localStorage.setItem('pharma_user', JSON.stringify(newUser));
-
-        return { success: true };
+        return data;
+        } catch (err) {
+        return { success: false, message: "Server error" };
+        }
     };
+
 
     const logout = () => {
         setUser(null);

@@ -14,16 +14,17 @@ export default function Login() {
 
     const from = location.state?.from?.pathname || "/dashboard";
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        if (email && password) {
-            const result = login(email, password);
-            if (result.success) {
-                navigate(from, { replace: true });
-            } else {
-                setError(result.message);
-            }
+    const handleLogin = async (e) => {
+    e.preventDefault();
+    if (email && password) {
+        const result = await login(email, password);
+
+        if (result.success) {
+            navigate(from, { replace: true });
+        } else {
+            setError(result.message);
         }
+    }
     };
 
     return (

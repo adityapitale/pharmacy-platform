@@ -15,20 +15,23 @@ export default function Signup() {
     });
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!formData.isPharmacist) {
-            setError("You must confirm you are a pharmacist to register.");
-            return;
-        }
+    const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        const result = register(formData);
-        if (result.success) {
-            navigate('/dashboard');
-        } else {
-            setError(result.message);
-        }
+    if (!formData.isPharmacist) {
+        setError("You must confirm you are a pharmacist to register.");
+        return;
+    }
+
+    const result = await register(formData);
+
+    if (result.success) {
+        navigate('/dashboard');
+    } else {
+        setError(result.message);
+    }
     };
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
