@@ -1,10 +1,17 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { PharmacyProvider } from './context/PharmacyContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { PharmacyProvider } from "./context/PharmacyContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import Onboarding from "./pages/Onboarding";
+import VerificationPending from "./pages/VerificationPending";
 
 function App() {
   return (
@@ -15,6 +22,22 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route
+                path="/onboarding"
+                element={
+                  <ProtectedRoute>
+                    <Onboarding />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/verification-pending"
+                element={
+                  <ProtectedRoute>
+                    <VerificationPending />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/dashboard"
                 element={
