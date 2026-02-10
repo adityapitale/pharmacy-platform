@@ -16,51 +16,61 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-    try {
-        const res = await fetch("http://localhost:5000/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
+        try {
+            const res = await fetch("http://localhost:5000/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
 
-        const data = await res.json();
+            const data = await res.json();
+            console.log("LOGIN RESPONSE:", data);
 
-        if (data.success) {
-            setUser(data.user);
-            localStorage.setItem("pharma_user", JSON.stringify(data.user));
-        }
+            if (data.success) {
+                setUser(data.user);
 
-        return data;
-    } catch (err) {
-        return { success: false, message: "Server error" };
-    }
-    };
+                // save token
+                localStorage.setItem("pharma_token", data.token);
 
-
-    const register = async (userData) => {
-    try {
-        const res = await fetch("http://localhost:5000/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData),
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-            const loggedUser = { ...userData, role: "PHARMACIST" };
-            setUser(loggedUser);
-            localStorage.setItem("pharma_user", JSON.stringify(loggedUser));
-        }
-
-        console.log("REGISTER RESPONSE:", data);
+                // save user also
+                localStorage.setItem("pharma_user", JSON.stringify(data.user));
+            }
 
         return data;
+
         } catch (err) {
         return { success: false, message: "Server error" };
         }
     };
 
+    const register = async (userData) => {
+        try {
+            const res = await fetch("http://localhost:5000/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userData),
+            });
+
+            const data = await res.json();
+            console.log("REGISTER RESPONSE:", data);
+
+            if (data.success) {
+                setUser(data.user);
+
+                // optional if backend sends token
+                if (data.token) {
+                    localStorage.setItem("pharma_token", data.token);
+                }
+
+                localStorage.setItem("pharma_user", JSON.stringify(data.user));
+            }
+
+            return data;
+
+        } catch (err) {
+        return { success: false, message: "Server error" };
+        }
+    };
 
     const logout = () => {
         setUser(null);

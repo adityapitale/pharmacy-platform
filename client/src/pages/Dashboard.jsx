@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import {
     LogOut,
@@ -12,7 +13,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { usePharmacy } from '../context/PharmacyContext';
-
 import AttentionRequired from '../components/Dashboard/AttentionRequired';
 import ComplianceStatus from '../components/Dashboard/ComplianceStatus';
 import TodaysActivity from '../components/Dashboard/TodaysActivity';
@@ -26,6 +26,20 @@ export default function Dashboard() {
     const { user, logout } = useAuth();
     const { processPrescription } = usePharmacy();
     const [isProcessing, setIsProcessing] = useState(false);
+
+    useEffect(() => {
+      const token = localStorage.getItem("pharma_token");
+
+      fetch("http://localhost:5000/api/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => console.log("ME API:", data));
+    }, []);
+
+    if (!user) return null;
 
     const handleLogout = () => {
         logout();

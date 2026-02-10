@@ -1,14 +1,14 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate, useLocation } from "react-router-dom";
 
 export default function ProtectedRoute({ children }) {
-    const { user } = useAuth();
-    const location = useLocation();
+  const location = useLocation();
 
-    if (!user) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
+  const token = localStorage.getItem("pharma_token");
 
-    return children;
+  if (!token) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
 }
