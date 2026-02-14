@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Upload,
-  FileText,
-  CheckCircle,
-  Shield,
-} from "lucide-react";
+import { Upload, FileText, CheckCircle, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -39,14 +34,14 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f2f7ff] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+          <div className="h-12 w-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
             <Shield size={32} />
           </div>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-[#1e2a38]">
           Verify Your Credentials
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
@@ -56,97 +51,87 @@ export default function Onboarding() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-10 shadow-[0_20px_40px_rgba(0,0,0,0.08)] rounded-[24px]">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* License */}
+            {/* License Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-bold text-[#1e2a38] mb-2">
                 Pharmacy License Document
               </label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-500 transition-colors cursor-pointer relative">
-                <div className="space-y-1 text-center">
+              <div className="flex items-center border border-blue-100 rounded-xl p-2 bg-white hover:border-[#37a1ed] hover:shadow-[0_0_0_4px_rgba(55,161,237,0.1)] transition-all duration-300 ease-in-out group">
+                <label
+                  htmlFor="license-upload"
+                  className="cursor-pointer bg-[#e3f1fd] text-[#2167a3] px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#d0e6ff] transition-colors shrink-0"
+                >
+                  Choose File
+                  <input
+                    id="license-upload"
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, "license")}
+                    required
+                  />
+                </label>
+                <span className="ml-3 text-[#2167a3] text-sm font-medium truncate group-hover:text-[#1c5a8f] transition-colors">
                   {files.license ? (
-                    <div className="flex flex-col items-center text-green-600">
-                      <CheckCircle size={32} />
-                      <p className="text-sm font-medium">
-                        {files.license.name}
-                      </p>
-                    </div>
+                    <span className="text-green-600 font-bold flex items-center">
+                      <CheckCircle size={16} className="mr-1.5" />
+                      {files.license.name}
+                    </span>
                   ) : (
-                    <>
-                      <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
-                        <label
-                          htmlFor="license-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"
-                        >
-                          <span>Upload a file</span>
-                          <input
-                            id="license-upload"
-                            type="file"
-                            className="sr-only"
-                            onChange={(e) => handleFileChange(e, "license")}
-                            required
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
-                      </div>
-                    </>
+                    "No file chosen"
                   )}
-                </div>
+                </span>
               </div>
             </div>
 
-            {/* ID */}
+            {/* ID Proof Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-bold text-[#1e2a38] mb-2">
                 Government ID Proof
               </label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-500 transition-colors cursor-pointer relative">
-                <div className="space-y-1 text-center">
+              <div className="flex items-center border border-blue-100 rounded-xl p-2 bg-white hover:border-[#37a1ed] hover:shadow-[0_0_0_4px_rgba(55,161,237,0.1)] transition-all duration-300 ease-in-out group">
+                <label
+                  htmlFor="id-upload"
+                  className="cursor-pointer bg-[#e3f1fd] text-[#2167a3] px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#d0e6ff] transition-colors shrink-0"
+                >
+                  Choose File
+                  <input
+                    id="id-upload"
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, "idProof")}
+                    required
+                  />
+                </label>
+                <span className="ml-3 text-[#2167a3] text-sm font-medium truncate group-hover:text-[#1c5a8f] transition-colors">
                   {files.idProof ? (
-                    <div className="flex flex-col items-center text-green-600">
-                      <CheckCircle size={32} />
-                      <p className="text-sm font-medium">
-                        {files.idProof.name}
-                      </p>
-                    </div>
+                    <span className="text-green-600 font-bold flex items-center">
+                      <CheckCircle size={16} className="mr-1.5" />
+                      {files.idProof.name}
+                    </span>
                   ) : (
-                    <>
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
-                        <label
-                          htmlFor="id-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"
-                        >
-                          <span>Upload a file</span>
-                          <input
-                            id="id-upload"
-                            type="file"
-                            className="sr-only"
-                            onChange={(e) => handleFileChange(e, "idProof")}
-                            required
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
-                      </div>
-                    </>
+                    "No file chosen"
                   )}
-                </div>
+                </span>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`w-full py-2 px-4 rounded-md text-white ${
-                isSubmitting
-                  ? "bg-indigo-400 cursor-not-allowed"
-                  : "bg-indigo-600 hover:bg-indigo-700"
-              }`}
-            >
-              {isSubmitting ? "Submitting..." : "Submit for Verification"}
-            </button>
+            <div>
+              {/* DEMO MODE: Document upload is mocked.
+                                Real file upload will be enabled after backend integration.
+                                Validation is temporarily disabled to allow easy testing. */}
+              <button
+                type="submit"
+                disabled={isSubmitting} // DEMO MODE: specific file checks removed
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white transition-all transform hover:-translate-y-0.5 
+                                ${isSubmitting ? "bg-indigo-400 cursor-not-allowed" : "bg-gradient-to-r from-[#37a1ed] to-[#2c61f2] hover:shadow-lg"}`}
+              >
+                {isSubmitting
+                  ? "Submitting (Demo)..."
+                  : "Submit for Verification (Demo)"}
+              </button>
+            </div>
           </form>
         </div>
       </div>
