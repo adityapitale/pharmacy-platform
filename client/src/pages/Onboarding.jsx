@@ -3,7 +3,6 @@ import {
   Upload,
   FileText,
   CheckCircle,
-  AlertCircle,
   Shield,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +10,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { user, submitOnboarding } = useAuth();
+  const { submitOnboarding } = useAuth();
   const [files, setFiles] = useState({ license: null, idProof: null });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,14 +23,19 @@ export default function Onboarding() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    // Simulate API call delay
-    setTimeout(() => {
-      submitOnboarding();
-      setIsSubmitting(false);
+    // basic validation
+    if (!files.license || !files.idProof) return;
+
+    try {
+      setIsSubmitting(true);
+      await submitOnboarding();
       navigate("/verification-pending");
-    }, 1500);
+    } catch {
+      // you can show toast later
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -54,7 +58,7 @@ export default function Onboarding() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* License Upload */}
+            {/* License */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Pharmacy License Document
@@ -74,12 +78,11 @@ export default function Onboarding() {
                       <div className="flex text-sm text-gray-600">
                         <label
                           htmlFor="license-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                          className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"
                         >
                           <span>Upload a file</span>
                           <input
                             id="license-upload"
-                            name="license-upload"
                             type="file"
                             className="sr-only"
                             onChange={(e) => handleFileChange(e, "license")}
@@ -88,16 +91,13 @@ export default function Onboarding() {
                         </label>
                         <p className="pl-1">or drag and drop</p>
                       </div>
-                      <p className="text-xs text-gray-500">
-                        PDF, PNG, JPG up to 10MB
-                      </p>
                     </>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* ID Proof Upload */}
+            {/* ID */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Government ID Proof
@@ -117,12 +117,11 @@ export default function Onboarding() {
                       <div className="flex text-sm text-gray-600">
                         <label
                           htmlFor="id-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                          className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"
                         >
                           <span>Upload a file</span>
                           <input
                             id="id-upload"
-                            name="id-upload"
                             type="file"
                             className="sr-only"
                             onChange={(e) => handleFileChange(e, "idProof")}
@@ -131,30 +130,23 @@ export default function Onboarding() {
                         </label>
                         <p className="pl-1">or drag and drop</p>
                       </div>
-                      <p className="text-xs text-gray-500">
-                        PDF, PNG, JPG up to 10MB
-                      </p>
                     </>
                   )}
                 </div>
               </div>
             </div>
 
-            <div>
-              {/* DEMO MODE: Document upload is mocked.
-                                Real file upload will be enabled after backend integration.
-                                Validation is temporarily disabled to allow easy testing. */}
-              <button
-                type="submit"
-                disabled={isSubmitting} // DEMO MODE: specific file checks removed
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
-                                ${isSubmitting ? "bg-indigo-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"}`}
-              >
-                {isSubmitting
-                  ? "Submitting (Demo)..."
-                  : "Submit for Verification (Demo)"}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full py-2 px-4 rounded-md text-white ${
+                isSubmitting
+                  ? "bg-indigo-400 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700"
+              }`}
+            >
+              {isSubmitting ? "Submitting..." : "Submit for Verification"}
+            </button>
           </form>
         </div>
       </div>

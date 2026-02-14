@@ -1,7 +1,8 @@
+require("dotenv").config();
+
 // Load packages
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 const { Pool } = require("pg");
 
 // Create express app
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 const authRoutes = require("./routes/authRoutes");
+const profileRoutes = require("./routes/profileRoutes"); 
 
 // PostgreSQL connection
 const pool = new Pool({
@@ -34,6 +36,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
 
 // Start server
 app.listen(5000, () => {

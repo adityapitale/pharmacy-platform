@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "../supabaseClient";
 
 const AuthContext = createContext(null);
 
@@ -6,20 +7,19 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // CHECK USER ON REFRESH
   useEffect(() => {
-    // Check localStorage on mount
     const storedUser = localStorage.getItem("pharma_user");
-    const storedStatus = localStorage.getItem("pharma_verification_status");
+    const token = localStorage.getItem("pharma_token");
 
-    if (storedUser) {
-      setUser({
-        ...JSON.parse(storedUser),
-        verificationStatus: storedStatus || "APPROVED", // Default to APPROVED for existing demo users
-      });
+    if (storedUser && token) {
+      setUser(JSON.parse(storedUser));
     }
+
     setIsLoading(false);
   }, []);
 
+  // LOGIN
   const login = async (email, password) => {
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
@@ -29,34 +29,32 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await res.json();
-      console.log("LOGIN RESPONSE:", data);
+      if (!data.success) return data;
 
-      if (data.success) {
-        // Check if specific verification status exists for this email
-        // In a real app, this comes from backend. For demo, we persist it or default to 'APPROVED'
-        let status =
-          localStorage.getItem(`status_${data.user.email}`) || "APPROVED";
+      localStorage.setItem("pharma_token", data.token);
 
-        // For demo purposes: If it's the specific "new user" flow we are testing
-        // we might want to force NEW. But for general login, assume APPROVED unless specified.
+      // GET STATUS FROM SUPABASE
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("verification_status")
+        .eq("id", data.user.id)
+        .single();
 
-        const userWithStatus = { ...data.user, verificationStatus: status };
-        setUser(userWithStatus);
+      const userWithStatus = {
+        ...data.user,
+        verificationStatus: profile?.verification_status || "not_submitted",
+      };
 
-        // save token
-        localStorage.setItem("pharma_token", data.token);
+      localStorage.setItem("pharma_user", JSON.stringify(userWithStatus));
+      setUser(userWithStatus);
 
-        // save user also
-        localStorage.setItem("pharma_user", JSON.stringify(data.user));
-        localStorage.setItem("pharma_verification_status", status);
-      }
-
-      return data;
-    } catch (err) {
+      return { success: true };
+    } catch {
       return { success: false, message: "Server error" };
     }
   };
 
+  // REGISTER
   const register = async (userData) => {
     try {
       const res = await fetch("http://localhost:5000/api/auth/register", {
@@ -66,58 +64,58 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await res.json();
-      console.log("REGISTER RESPONSE:", data);
+      if (!data.success) return data;
 
-      if (data.success) {
-        setUser(data.user);
-
-        // optional if backend sends token
-        if (data.token) {
-          localStorage.setItem("pharma_token", data.token);
-        }
-
-        // NEW USER -> Status = NEW
-        // We use email-specific key to simulate persistent status for this user
-        const initialStatus = "NEW";
-        localStorage.setItem(`status_${data.user.email}`, initialStatus);
-        localStorage.setItem("pharma_verification_status", initialStatus);
-
-        const userWithStatus = {
-          ...data.user,
-          verificationStatus: initialStatus,
-        };
-        setUser(userWithStatus);
-        localStorage.setItem("pharma_user", JSON.stringify(data.user));
+      if (data.token) {
+        localStorage.setItem("pharma_token", data.token);
       }
 
-      return data;
-    } catch (err) {
+      // CREATE PROFILE
+      await supabase.from("profiles").insert({
+        id: data.user.id,
+        full_name: userData.name,
+        role: "pharmacist",
+        verification_status: "not_submitted",
+      });
+
+      const userWithStatus = {
+        ...data.user,
+        verificationStatus: "not_submitted",
+      };
+
+      localStorage.setItem("pharma_user", JSON.stringify(userWithStatus));
+      setUser(userWithStatus);
+
+      return { success: true };
+    } catch {
       return { success: false, message: "Server error" };
     }
   };
 
+  // LOGOUT
   const logout = () => {
     setUser(null);
     localStorage.removeItem("pharma_user");
     localStorage.removeItem("pharma_token");
-    localStorage.removeItem("pharma_verification_status");
   };
 
-  const submitOnboarding = () => {
+  // AFTER DOCUMENT SUBMISSION
+  const submitOnboarding = async () => {
     if (!user) return;
 
-    // BACKEND INTEGRATION:
-    // 1. Upload files to S3/Cloudinary
-    // 2. Call API to update user status to 'PENDING'
-    // 3. Trigger admin notification email
+    await fetch("http://localhost:5000/api/profile/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.id }),
+    });
 
-    const newStatus = "PENDING";
-    // Update state
-    setUser((prev) => ({ ...prev, verificationStatus: newStatus }));
+    const updatedUser = {
+      ...user,
+      verificationStatus: "pending",
+    };
 
-    // Update storage
-    localStorage.setItem("pharma_verification_status", newStatus);
-    localStorage.setItem(`status_${user.email}`, newStatus);
+    localStorage.setItem("pharma_user", JSON.stringify(updatedUser));
+    setUser(updatedUser);
   };
 
   return (
